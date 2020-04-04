@@ -11,6 +11,7 @@
     "main": "app.js",
     "scripts": {
         "start": "node loader.js",
+        "start:dev": "./nodebb dev",
         "lint": "npx eslint --cache ./nodebb .",
         "pretest": "npm run lint",
         "test": "npx nyc --reporter=html --reporter=text-summary npx mocha",
@@ -18,8 +19,7 @@
     },
     "husky": {
         "hooks": {
-            "pre-commit": "lint-staged",
-            "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+            "pre-commit": "lint-staged"
         }
     },
     "lint-staged": {
