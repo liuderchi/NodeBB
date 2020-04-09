@@ -12,6 +12,7 @@ var messaging = require('../messaging');
 var meta = require('../meta');
 var plugins = require('../plugins');
 var navigation = require('../navigation');
+var categories = require('../categories');
 var translator = require('../translator');
 var privileges = require('../privileges');
 var languages = require('../languages');
@@ -107,6 +108,7 @@ module.exports = function (middleware) {
 						});
 					},
 					navigation: async.apply(navigation.get, req.uid),
+					categories: async.apply(categories.getAllCategories, req.uid),
 					banned: async.apply(user.bans.isBanned, req.uid),
 					banReason: async.apply(user.bans.getReason, req.uid),
 
@@ -178,6 +180,7 @@ module.exports = function (middleware) {
 
 				templateValues.browserTitle = results.browserTitle;
 				templateValues.navigation = results.navigation;
+				templateValues.categories = results.categories;
 				templateValues.unreadCount = unreadCount;
 				templateValues.isAdmin = results.user.isAdmin;
 				templateValues.isGlobalMod = results.user.isGlobalMod;
