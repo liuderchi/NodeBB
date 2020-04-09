@@ -13,6 +13,7 @@ var messaging = require('../messaging');
 var meta = require('../meta');
 var plugins = require('../plugins');
 var navigation = require('../navigation');
+var categories = require('../categories');
 var translator = require('../translator');
 var privileges = require('../privileges');
 var languages = require('../languages');
@@ -69,6 +70,7 @@ module.exports = function (middleware) {
 			languageDirection: translator.translate('[[language:dir]]', res.locals.config.userLang),
 			browserTitle: translator.translate(controllers.helpers.buildTitle(translator.unescape(data.title))),
 			navigation: navigation.get(req.uid),
+            categories: categories.getAllCategories(req.uid),
 			banned: user.bans.isBanned(req.uid),
 			banReason: user.bans.getReason(req.uid),
 
@@ -139,6 +141,7 @@ module.exports = function (middleware) {
 
 		templateValues.browserTitle = results.browserTitle;
 		templateValues.navigation = results.navigation;
+        templateValues.categories = results.categories;
 		templateValues.unreadCount = unreadCount;
 		templateValues.isAdmin = results.user.isAdmin;
 		templateValues.isGlobalMod = results.user.isGlobalMod;
