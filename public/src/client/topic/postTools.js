@@ -78,20 +78,49 @@ define('forum/topic/postTools', [
 		navigator.setCount(postCount);
 	};
 
+	function insertTextInTextarea(text) {
+		var textareaQuery = $('textarea.write');
+		if (typeof textareaQuery.val === 'function') {
+			textareaQuery.val(text + textareaQuery.val());
+		}
+	}
+
+	function insertSecretButton() {
+		// insert "secret" button in post editor
+		var btnGroupQuery = $('ul.formatting-group');
+		if (btnGroupQuery.length) {
+			var firstBtnTitle = btnGroupQuery.find('> li:first').attr('title');
+			var secretBtnTitle = 'Mark this post private, visible only by admin and original author';
+			if (typeof firstBtnTitle === 'string' && firstBtnTitle !== secretBtnTitle) {
+				var secretBtnHtml = '<li tabindex="-1" data-format="secret" title="' + secretBtnTitle +
+					'"><i class="fa fa-asterisk"></i></li>';
+				btnGroupQuery.prepend(secretBtnHtml);
+				$('li[data-format="secret"]').click(function () {
+					insertTextInTextarea('＊＊＊\n');
+				});
+			}
+		}
+	}
+
 	function addPostHandlers(tid) {
 		var postContainer = components.get('topic');
 
 		postContainer.on('click', '[component="post/quote"]', function () {
 			onQuoteClicked($(this), tid);
+			setTimeout(insertSecretButton, 500);
 		});
 
 		postContainer.on('click', '[component="post/reply"]', function () {
 			onReplyClicked($(this), tid);
+			setTimeout(insertSecretButton, 500);
 		});
 
 		$('.topic').on('click', '[component="topic/reply"]', function (e) {
 			e.preventDefault();
 			onReplyClicked($(this), tid);
+			setTimeout(insertSecretButton, 500);
+			var postAuthorId = $('ul.posts > li:first').attr('data-username');
+			setTimeout(function () { insertTextInTextarea(postAuthorId ? '@' + postAuthorId + ' ' : ''); }, 500);
 		});
 
 		$('.topic').on('click', '[component="topic/reply-as-topic"]', function () {
@@ -149,6 +178,7 @@ define('forum/topic/postTools', [
 				$(window).trigger('action:composer.post.edit', {
 					pid: getData(btn, 'data-pid'),
 				});
+				setTimeout(insertSecretButton, 500);
 			}
 		});
 
