@@ -87,6 +87,24 @@ define('forum/topic/postTools', [
 
 		postContainer.on('click', '[component="post/reply"]', function () {
 			onReplyClicked($(this), tid);
+			setTimeout(function () {
+				// insert "secret" button
+				var btnGroupQuery = $('ul.formatting-group');
+				if (btnGroupQuery.length) {
+					var firstBtnTitle = btnGroupQuery.find('> li:first').attr('data-format');
+					var secretBtnTitle = 'Secret';
+					if (typeof firstBtnTitle === 'string' && firstBtnTitle !== secretBtnTitle) {
+						var secretBtnHtml = '<li tabindex="-1" data-format="secret" title="' + 		secretBtnTitle +
+							'"><i class="fa fa-asterisk"></i></li>';
+						btnGroupQuery.prepend(secretBtnHtml);
+						$('li[data-format="secret"]').click(function () {
+							var textareaQuery = $('textarea.write');
+							var secretPrefix = '＊＊＊\n';
+							textareaQuery.val(secretPrefix + textareaQuery.val());
+						});
+					}
+				}
+			}, 500);
 		});
 
 		$('.topic').on('click', '[component="topic/reply"]', function (e) {
