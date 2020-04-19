@@ -78,6 +78,25 @@ define('forum/topic/postTools', [
 		navigator.setCount(postCount);
 	};
 
+	function insertSecretButton() {
+		// insert "secret" button in post editor
+		var btnGroupQuery = $('ul.formatting-group');
+		if (btnGroupQuery.length) {
+			var firstBtnTitle = btnGroupQuery.find('> li:first').attr('title');
+			var secretBtnTitle = 'Secret';
+			if (typeof firstBtnTitle === 'string' && firstBtnTitle !== secretBtnTitle) {
+				var secretBtnHtml = '<li tabindex="-1" data-format="secret" title="' + 		secretBtnTitle +
+					'"><i class="fa fa-asterisk"></i></li>';
+				btnGroupQuery.prepend(secretBtnHtml);
+				$('li[data-format="secret"]').click(function () {
+					var textareaQuery = $('textarea.write');
+					var secretPrefix = '＊＊＊\n';
+					textareaQuery.val(secretPrefix + textareaQuery.val());
+				});
+			}
+		}
+	}
+
 	function addPostHandlers(tid) {
 		var postContainer = components.get('topic');
 
@@ -87,24 +106,7 @@ define('forum/topic/postTools', [
 
 		postContainer.on('click', '[component="post/reply"]', function () {
 			onReplyClicked($(this), tid);
-			setTimeout(function () {
-				// insert "secret" button
-				var btnGroupQuery = $('ul.formatting-group');
-				if (btnGroupQuery.length) {
-					var firstBtnTitle = btnGroupQuery.find('> li:first').attr('data-format');
-					var secretBtnTitle = 'Secret';
-					if (typeof firstBtnTitle === 'string' && firstBtnTitle !== secretBtnTitle) {
-						var secretBtnHtml = '<li tabindex="-1" data-format="secret" title="' + 		secretBtnTitle +
-							'"><i class="fa fa-asterisk"></i></li>';
-						btnGroupQuery.prepend(secretBtnHtml);
-						$('li[data-format="secret"]').click(function () {
-							var textareaQuery = $('textarea.write');
-							var secretPrefix = '＊＊＊\n';
-							textareaQuery.val(secretPrefix + textareaQuery.val());
-						});
-					}
-				}
-			}, 500);
+			setTimeout(insertSecretButton, 500);
 		});
 
 		$('.topic').on('click', '[component="topic/reply"]', function (e) {
@@ -157,6 +159,7 @@ define('forum/topic/postTools', [
 				$(window).trigger('action:composer.post.edit', {
 					pid: getData(btn, 'data-pid'),
 				});
+				setTimeout(insertSecretButton, 500);
 			}
 		});
 
