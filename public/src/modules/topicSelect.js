@@ -28,6 +28,13 @@ define('topicSelect', ['components'], function (components) {
 			if (typeof onSelect === 'function') {
 				onSelect();
 			}
+
+			// F1. redirect to topic url
+			var topicUrl = $(this)
+				.parents('[component="category/topic"]')
+				.find('[component="topic/header"] > a')
+				.attr('href');
+			location.href = topicUrl;
 		});
 	};
 
