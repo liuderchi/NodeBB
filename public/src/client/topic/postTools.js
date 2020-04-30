@@ -83,9 +83,9 @@ define('forum/topic/postTools', [
 		var btnGroupQuery = $('ul.formatting-group');
 		if (btnGroupQuery.length) {
 			var firstBtnTitle = btnGroupQuery.find('> li:first').attr('title');
-			var secretBtnTitle = 'Secret';
+			var secretBtnTitle = 'Mark this post private, visible only by admin and original author';
 			if (typeof firstBtnTitle === 'string' && firstBtnTitle !== secretBtnTitle) {
-				var secretBtnHtml = '<li tabindex="-1" data-format="secret" title="' + 		secretBtnTitle +
+				var secretBtnHtml = '<li tabindex="-1" data-format="secret" title="' + secretBtnTitle +
 					'"><i class="fa fa-asterisk"></i></li>';
 				btnGroupQuery.prepend(secretBtnHtml);
 				$('li[data-format="secret"]').click(function () {
@@ -102,6 +102,7 @@ define('forum/topic/postTools', [
 
 		postContainer.on('click', '[component="post/quote"]', function () {
 			onQuoteClicked($(this), tid);
+			setTimeout(insertSecretButton, 500);
 		});
 
 		postContainer.on('click', '[component="post/reply"]', function () {
