@@ -78,6 +78,13 @@ define('forum/topic/postTools', [
 		navigator.setCount(postCount);
 	};
 
+	function insertTextInTextarea(text) {
+		var textareaQuery = $('textarea.write');
+		if (typeof textareaQuery.val === 'function') {
+			textareaQuery.val(text + textareaQuery.val());
+		}
+	}
+
 	function insertSecretButton() {
 		// insert "secret" button in post editor
 		var btnGroupQuery = $('ul.formatting-group');
@@ -89,9 +96,7 @@ define('forum/topic/postTools', [
 					'"><i class="fa fa-asterisk"></i></li>';
 				btnGroupQuery.prepend(secretBtnHtml);
 				$('li[data-format="secret"]').click(function () {
-					var textareaQuery = $('textarea.write');
-					var secretPrefix = '＊＊＊\n';
-					textareaQuery.val(secretPrefix + textareaQuery.val());
+					insertTextInTextarea('＊＊＊\n');
 				});
 			}
 		}
@@ -113,6 +118,9 @@ define('forum/topic/postTools', [
 		$('.topic').on('click', '[component="topic/reply"]', function (e) {
 			e.preventDefault();
 			onReplyClicked($(this), tid);
+			setTimeout(insertSecretButton, 500);
+			var postAuthorId = $('ul.posts > li:first').attr('data-username');
+			setTimeout(function () { insertTextInTextarea(postAuthorId ? '@' + postAuthorId + ' ' : ''); }, 500);
 		});
 
 		$('.topic').on('click', '[component="topic/reply-as-topic"]', function () {
