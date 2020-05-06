@@ -12,6 +12,52 @@ define('forum/account/posts', ['forum/account/header', 'forum/infinitescroll'], 
 		$('[component="post/content"] img:not(.not-responsive)').addClass('img-responsive');
 
 		AccountPosts.handleInfiniteScroll('posts.loadMoreUserPosts', 'account/posts');
+
+		// B5: search posts
+		function searchPosts(keyword) {
+			if (!keyword) {
+				$('ul > li.posts-list-item').each(function () {
+					$(this).show();
+				});
+				return true;
+			}
+			$('ul > li.posts-list-item').each(function () {
+				if (($(this).find('[component="post/content"]').text() || '').indexOf(keyword) > -1 ||
+					($(this).find('a.topic-title').text() || '').indexOf(keyword) > -1
+				) {
+					$(this).show();
+				} else {
+					$(this).hide();
+				}
+			});
+		}
+
+		// search bar
+		$('#posts-search-btn').click(function () {
+			var keyword = $('#posts-search-input').val();
+			searchPosts(keyword);
+		});
+
+		// filter button
+		var authorsMap = {};
+		$('ul > li.posts-list-item [component="post/content"] > p')
+			.each(function () {
+				var extractedAuthor = (($(this).text() || '').match(/@\w+/g) || [])[0];
+				if (extractedAuthor) {
+					authorsMap[extractedAuthor] = true;
+				}
+			});
+		var authors = Object.keys(authorsMap).sort();
+		authors.forEach(function (author) {
+			$('#posts-search-tags').append('<button type="button" class="btn btn-link">' + author + '</button>');
+		});
+		$('#posts-search-tags > button').each(function () {
+			var author = $(this).text() || '';
+			$(this).click(function () {
+				searchPosts(author);
+				$('#posts-search-input').val(author);
+			});
+		});
 	};
 
 	AccountPosts.handleInfiniteScroll = function (_method, _template) {
