@@ -18,12 +18,12 @@ define('forum/account/profile', [
 		socket.on('event:user_status_change', onUserStatusChange);
 
 		// B9: user note
-		var FIELD_NOTE = 'note';
+		var NOTE_FIELD = { key: 'note', name: 'Note' }
 		function fetchNote() {
 			return fetch(location.origin + '/api/user/' + app.user.username)
 				.then(function (r) { return r.json(); })
 				.then(function (data) {
-					var noteField = data.customFields.find(function (item) { return item.name === 'Note'; }) || {};
+					var noteField = data.customFields.find(function (item) { return item.name === NOTE_FIELD.name; }) || {};
 					var noteJsonString = noteField.value || '{}';
 					return JSON.parse(noteJsonString);
 				});
@@ -49,7 +49,7 @@ define('forum/account/profile', [
 							{
 								uid: app.user.uid,
 								// Note: note sure data array should be complete if we have more than one custom fields
-								data: [{ name: FIELD_NOTE, value: payload }],
+								data: [{ name: NOTE_FIELD.key, value: payload }],
 							},
 							function (error) {
 								if (error) { return app.alertError(error.message); }
