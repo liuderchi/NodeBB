@@ -22,8 +22,8 @@ define('forum/account/posts', ['forum/account/header', 'forum/infinitescroll'], 
 				return true;
 			}
 			$('ul > li.posts-list-item').each(function () {
-				if (($(this).find('[component="post/content"]').text() || '').indexOf(keyword) > -1 ||
-					($(this).find('a.topic-title').text() || '').indexOf(keyword) > -1
+				if (($(this).find('[component="post/content"]').text() || '').toLowerCase().indexOf(keyword.toLowerCase()) > -1 ||
+					($(this).find('a.topic-title').text() || '').toLowerCase().indexOf(keyword.toLowerCase()) > -1
 				) {
 					$(this).show();
 				} else {
